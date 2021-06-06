@@ -42,6 +42,9 @@ In problem 3, our goal is to read in the data using Pandas and create two lists 
 ```python
 #YOUR CODE HERE 1 to read the file
 import pandas as pd 
+fp='data/travelTimes_2015_Helsinki.txt'
+data=pd.read_csv(fp,sep=';')
+
 ```
 
 
@@ -64,6 +67,7 @@ print(data.head())
 
 ```python
 # YOUR CODE HERE 2 to set `data`
+data=data.filter(['from_x','from_y','to_x','to_y'])
 ```
 
 
@@ -76,7 +80,9 @@ print(list(data.columns))
 
 
 ```python
-# YOUR CODE HERE 3 to define empty lists orig_points and dest_points
+# YOUR CODE HERE 3 to define empty lists 
+orig_points and dest_pointsorig_points=[]
+dest_points=[]
 ```
 
 
@@ -115,6 +121,12 @@ print('dest_points length:', len(dest_points))
 ```python
 # YOUR CODE HERE 4 to append points in orig_points and dest_points
 from shapely.geometry import Point
+
+for idx,d in data.iterrows():
+  point_orig=Point(d[0],d[1])
+  point_dest=Point(d[2],d[3])
+  orig_points.append(point_orig)
+  dest_points.append(point_dest)
 ```
 
 ```python
@@ -141,6 +153,7 @@ This task continuous where we left in Problem 3. In this problem, the goal is to
 
 ```python
 # YOUR CODE HERE 5
+lines=[]
 ```
 
 ```python
@@ -164,6 +177,9 @@ print('lines length:', len(lines))
 # YOUR CODE HERE 6 to append LineString to lines
 #raise NotImplementedError()
 from shapely.geometry import LineString
+for orig,dest in zip(orig_points,dest_points):
+  line=LineString([(orig.x,orig.y),(dest.x,dest.y)])
+  lines.append(line)
 ```
 
 
@@ -181,6 +197,9 @@ assert len(lines) == len(data), "There should be as many lines as there are rows
 
 ```python
 # YOUR CODE HERE 7 to find total length
+total_length=0.0
+for line in lines:
+  total_length=total_length+line.length
 ```
 
 
@@ -203,6 +222,18 @@ You can copy and paste the codes you have written earlier into the functions. Be
 
 ```python
 # YOUR CODE HERE 8 to define create_od_lines() and calculate_total_distance()
+def create_od_lines(point1,point2):
+  od_lines=[]
+  for orig,dest in zip(point1,point2):
+    line=LineString([(orig.x,orig.y),(dest.x,dest.y)])
+    od_lines.append(line)
+    return od_lines
+
+def calculate_total_distance(line_string):
+  total_distance=0.0
+  for line in line_string:
+    total_distance=total_distance+line.length
+    return total_distance    
 ```
 
 
